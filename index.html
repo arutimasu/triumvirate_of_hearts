@@ -1,0 +1,154 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>Triumvirate of Hearts: Online</title>
+</head>
+<body>
+<p>Ваш счёт: <strong id="player_score"></strong> | Счёт вашего противника: <strong id="enemy_score"></strong></p>
+<p>Вероятность успешного действия: <strong id="probability"></strong></p>
+<center>
+<h3>Выбери действие:</h3>
+<input id="giveFlowers" type="button" value="Подарить цветы"></input>
+<input id="go_to_the_cinema" type="button" value="Сходить в кино"></input>
+<input id="go_to_a_restaurant" type="button" value="Сходить в ресторан"></input>
+<input id="goVisit" type="button" value="Сходить в гости"></input>
+<input id="like" type="button" value="Поставить лайк"></input>
+<h3>Действия противника: </h3>
+<i id="enemy_actions"></i>
+<script>
+let player_score = 0;
+let enemy_score = 0;
+const preferences = [];// [10, -25, -50, 25, 20];
+const actions = ["Подарить цветы", "Сходить в кино", "Сходить в ресторан", "Сходить в гости", "Поставить лайк"];
+let errors = [];
+let player_times = 0;
+let enemy_times = 0;
+//let prev_action = null;
+let player_actions = [];
+function getPositiveNumbers(array){
+	return array.filter(function(value){return value > 0;});
+}
+function getCertrainNumbersCount(array, number){
+	//return array.filter(x => x==number);
+	var count = 0;
+	for(var i = 0; i < array.length; i++){
+		if(array[i] == number){
+			count++;
+		}
+	}
+	return count;
+}
+function calculate_probability(){
+	probability = getPositiveNumbers(preferences).length / preferences.length;
+	console.log(probability);
+	/*giveFlowers.textContent += " ("+probability+")";
+	go_to_the_cinema.textContent += " ("+probability+")";
+	go_to_a_restaurant.textContent += " ("+probability+")";
+	goVisit.textContent += " ("+probability+")";
+	like.textContent += " ("+probability+")";*/
+	document.getElementById("probability").innerHTML = probability * 100 + "%";
+	//document.getElementById("player_score")
+	//document.getElementById("player_score")
+	//document.getElementById("goVisit").innerHTML +=" ("+probability+")";
+	//document.getElementById("like").innerHTML +=" ("+probability+")";
+}
+function generate_character(){
+	for(var i = 0; i < 5; i++){
+		preferences[i] = Math.floor(Math.random() * 200) - 99;
+	}
+}
+function select(index){
+	/*if(index == prev_action){
+		player_times;
+	}
+	else{
+		player_times = 0;
+	}
+	prev_action = index;
+	if(player_times >= 2){
+		alert("Мне это надоело! Ничего лучшего не придумал!")
+		player_score -= 10;
+	}*/
+	console.log(player_actions);
+	console.log(getCertrainNumbersCount(player_actions, index));
+	
+	
+	
+	/*if(enemy_score >= 300){
+		alert("You lose!");
+		location.reload();
+	}
+	else if(enemy_score < 0){
+		alert("You win!");
+		location.reload();
+	}*/
+	if(getCertrainNumbersCount(player_actions, index) >= 2){
+		alert("Мне это надоело! Ничего лучшего не придумал!")
+		player_score -= 10;
+	}else{
+		player_score +=preferences[index];
+	}
+	player_actions.push(index);
+	
+	//let div = document.createElement('div');
+	document.getElementById("player_score").innerHTML = player_score;
+	
+	//div.className = "playerScore";
+	//div.innerHTML = player_score;
+	
+	
+	let action = Math.floor(Math.random() * 5);
+	//let result = preferences[Math.floor(Math.random() * 5)];//= 0;
+	while(errors.includes(action)){
+		//let result = preferences[Math.floor(Math.random() * 5)];
+		action = Math.floor(Math.random() * 5);
+	}
+	
+	let result = preferences[action];
+	if(result <= 0){
+		errors.push(action);
+	}
+	enemy_score+=result;
+	document.getElementById("enemy_score").innerHTML = enemy_score;
+	//console.log(errors);
+	/*if(action == prev_action){
+		enemy_times++;
+	}
+	else{
+		enemy_times = 0;
+	}
+	prev_action = action;
+	if(enemy_actions >= 2){
+		//alert("Мне это надоело! Ничего лучшего не придумал!")
+		document.getElementById("enemy_actions").innerHTML += '<br/>Противник выбрал действие "'+actions[action]+'" [ПРОВАЛ]';
+		enemy_score -= 10;
+	}*/
+	if(result <= 0){
+		document.getElementById("enemy_actions").innerHTML += '<br/>Противник выбрал действие "'+actions[action]+'" [ПРОВАЛ]';
+	}
+	else{
+		document.getElementById("enemy_actions").innerHTML += '<br/>Противник выбрал действие "'+actions[action]+'"';
+	}
+	if(player_score >= 300 || enemy_score < 0){
+		alert("You win!");
+		location.reload();
+	}
+	else if(player_score < 0 || enemy_score >= 300){
+		alert("You lose");
+		location.reload();
+	}
+	
+	
+}
+giveFlowers.onclick = () => select(0)//.addEventListener("click", select(0));
+go_to_the_cinema.onclick = () => select(1)//.addEventListener("click", select(1));
+go_to_a_restaurant.onclick = () => select(2)//.addEventListener("click", select(2));
+goVisit.onclick = () => select(3)//.addEventListener("click", select(3));
+like.onclick = () => select(4)//.addEventListener("click", select(4));
+
+generate_character();
+calculate_probability();
+</script>
+</center>
+</body>
+</html>
